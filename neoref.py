@@ -1,5 +1,6 @@
 import pygame, sys
-HEIGHT= WIDTH = 900
+HEIGHT= 1000
+WIDTH = 900
 from pyswip import Prolog
 
 vec2 = pygame.math.Vector2
@@ -21,6 +22,8 @@ class tictactoe:
         self.prolog.consult('minimax.pl')
         self.create_board()
         self.draw_board()
+        self.winner = None
+        self.font = pygame.font.SysFont('Verdana', 150 // 4, True)
 
     def create_board(self):
         for i in range(9):
@@ -28,6 +31,7 @@ class tictactoe:
 
     def draw_board(self):
         self.game.screen.blit(self.field, (0,0))
+        pygame.display.set_caption('TIC TAC TOE')
 
     def redraw(self):
         for i in range(len(self.board)):
@@ -66,22 +70,12 @@ class tictactoe:
         #     elif (x < 900 and y < 900):
         #         self.position = 8
 
-        if left_click and self.board[my_pos] == 'n':
+        if left_click and self.board[my_pos] == 'n' and not self.winner:
             self.board[my_pos] = self.player_value
             print("board after", self.board)
             print("board len", len(self.board))
             self.player = self.swap_turn(self.player)
             # self.position = int(my_pos)
-
-            
-    def draw_image(self):
-        if self.position == 0:
-            self.row = 80
-            self.col = 80
-        
-        self.game.screen.blit(self.x, (self.row, self.col))
-
-        pygame.display.update()
 
     def check_win(self, player):
         win = None
@@ -102,8 +96,8 @@ class tictactoe:
                     break
             if win:
                 print("win row")
+                self.winner = 1
                 return win
-
         
         #check winning columns
         for i in range(board_len):
@@ -114,6 +108,7 @@ class tictactoe:
                     break
             if win:
                 print("win col")
+                self.winner = 1
                 return win
         
         #check winning diagonals
@@ -124,6 +119,7 @@ class tictactoe:
                 break
         if win:
             print("win diagonal left")
+            self.winner = 1
             return win
         
         win = True
@@ -133,6 +129,7 @@ class tictactoe:
                 break
         if win:
             print("win diagonal right")
+            self.winner = 1
             return win
 
         for val in self.board:
@@ -171,6 +168,9 @@ class tictactoe:
             #check win condition
             if self.check_win("player"):
                 print("Player's win!")
+                pygame.display.set_caption('Player wins! Press Space to Restart')
+                label = self.font.render(f'Player wins! Press Space to restart', True, 'white', 'black')
+                self.game.screen.blit(label, (900 // 2 - label.get_width() // 2, 900 // 4))
                 return
 
         else:
@@ -185,10 +185,16 @@ class tictactoe:
             #check win condition
             if self.check_win("com"):
                 print("Bot's win!")
+                pygame.display.set_caption('Bot wins! Press Space to Restart')
+                label = self.font.render(f'Bot wins! Press Space to restart', True, 'white', 'black')
+                self.game.screen.blit(label, (900 // 2 - label.get_width() // 2, 900 // 4))
                 return
         
         if self.board_full():
             print("Draw!")
+            pygame.display.set_caption('Draw! Press Space to Restart')
+            label = self.font.render(f'Draw! Press Space to restart', True, 'white', 'black')
+            self.game.screen.blit(label, (900 // 2 - label.get_width() // 2, 900 // 4))
             return
             
         #swap turn
@@ -203,12 +209,18 @@ class Game:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.tictactoe = tictactoe(self)
+    
+    def new_game(self):
+        self.tictactoe = tictactoe(self)
 
     def check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.new_game()
 
     def run(self):
         while True:
