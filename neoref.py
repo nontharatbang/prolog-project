@@ -77,6 +77,14 @@ class tictactoe:
             self.player = self.swap_turn(self.player)
             # self.position = int(my_pos)
 
+    def draw_winner(self):
+        if self.check_win("player"):
+            label = self.font.render(f'Player wins! Press Spacbar to Restart', True, 'white', 'black')
+            self.game.screen.blit(label, (900 // 2 - label.get_width() // 2, 900 // 4))
+        if self.check_win("com"):
+            label = self.font.render(f'Bot wins! Press Spacbar to Restart', True, 'white', 'black')
+            self.game.screen.blit(label, (900 // 2 - label.get_width() // 2, 900 // 4))
+
     def check_win(self, player):
         win = None
         value = 'o' if player == "player" else 'x'
@@ -169,8 +177,6 @@ class tictactoe:
             if self.check_win("player"):
                 print("Player's win!")
                 pygame.display.set_caption('Player wins! Press Space to Restart')
-                label = self.font.render(f'Player wins! Press Space to restart', True, 'white', 'black')
-                self.game.screen.blit(label, (900 // 2 - label.get_width() // 2, 900 // 4))
                 return
 
         else:
@@ -186,8 +192,6 @@ class tictactoe:
             if self.check_win("com"):
                 print("Bot's win!")
                 pygame.display.set_caption('Bot wins! Press Space to Restart')
-                label = self.font.render(f'Bot wins! Press Space to restart', True, 'white', 'black')
-                self.game.screen.blit(label, (900 // 2 - label.get_width() // 2, 900 // 4))
                 return
         
         if self.board_full():
@@ -202,6 +206,7 @@ class tictactoe:
             
         print()
         self.redraw()
+        self.draw_winner()
     
 class Game:
     def __init__(self):
