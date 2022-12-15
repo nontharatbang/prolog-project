@@ -1,4 +1,4 @@
-class tictactoe:
+class TicTacToe:
     def __init__(self):
         self.board = []
         self.player_turn = True
@@ -27,20 +27,26 @@ class tictactoe:
 
         #check winning rows
         for i in range(board_len):
+            win = True
             for j in range(board_len):
                 if self.board[board_pos[i][j]] != value:
+                    print("check ", self.board[board_pos[i][j]], "with ", value)
                     win = False
                     break
             if win:
+                print("win row")
                 return win
+
         
         #check winning columns
         for i in range(board_len):
+            win = True
             for j in range(board_len):
                 if self.board[board_pos[j][i]] != value:
                     win = False
                     break
             if win:
+                print("win col")
                 return win
         
         #check winning diagonals
@@ -50,6 +56,7 @@ class tictactoe:
                 win = False
                 break
         if win:
+            print("win diagonal left")
             return win
         
         win = True
@@ -58,12 +65,13 @@ class tictactoe:
                 win = False
                 break
         if win:
+            print("win diagonal right")
             return win
 
-        # for row in self.board:
-        #     for val in row:
-        #         if val == '-':
-        #             return False
+        for val in self.board:
+            if val == '-':
+                return False
+        print("win default")
         return True
 
     def board_full(self):
@@ -72,11 +80,15 @@ class tictactoe:
                 return False
         return True
 
+    def swap_turn(self, player):
+        return "com" if player == "player" else "player"
+
     def play(self):
         self.create_board()
 
+        player = "player"
         while True:
-            if(player == 'player'):
+            if(player == "player"):
                 print("Player's Turn")
                 
                 self.draw_board()
@@ -91,15 +103,19 @@ class tictactoe:
                 if self.check_win("player"):
                     print("Player's win!")
                     break
+                continue
 
             else:
                 print("Computer's Turn")
                 
+                self.draw_board()
                 #com function minimax
-                
+                pos = int(input("Input: "))
+                self.board[pos] = 'O'
+
                 #check win condition
                 if self.check_win("com"):
-                    print("Player's win!")
+                    print("Com's win!")
                     break
             
             if self.board_full():
@@ -110,5 +126,7 @@ class tictactoe:
             player = self.swap_turn(player)
             
         print()
-        draw_board()
+        self.draw_board()
 
+game = TicTacToe()
+game.play()
