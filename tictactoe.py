@@ -5,29 +5,30 @@ class tictactoe:
         self.player_value = "X"
 
     def create_board(self):
-        for i in range(3):
-            row = []
-            for j in range(3):
-                row.append("-")
-            self.board.append(row)
+        for i in range(9):
+            self.board.append('-')
 
     def draw_board(self):
-        for row in self.board:
-            for val in row:
-                print(val, end=" ")
-            print()
+        board_len = len(self.board)
+        for i in range(board_len):
+            if(i % 3 == 0):
+                print()
+            print(self.board[i], end=" ")
+        print()
 
-    def fill_position(self, row, col, value):
-        self.board[row][col] = value
+    def fill_position(self, pos, value):
+        self.board[pos - 1] = value
 
     def check_win(self, player):
         win = None
-        board_len = len(self.board)
         value = 'X' if player == "player" else 'O'
+        board_pos = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+        board_len = len(board_pos)
+
         #check winning rows
         for i in range(board_len):
             for j in range(board_len):
-                if self.board[i][j] != value:
+                if self.board[board_pos[i][j]] != value:
                     win = False
                     break
             if win:
@@ -36,7 +37,7 @@ class tictactoe:
         #check winning columns
         for i in range(board_len):
             for j in range(board_len):
-                if self.board[j][i] != value:
+                if self.board[board_pos[j][i]] != value:
                     win = False
                     break
             if win:
@@ -45,7 +46,7 @@ class tictactoe:
         #check winning diagonals
         win = True
         for i in range(board_len):
-            if self.board[i][i] != value:
+            if self.board[board_pos[i][i]] != value:
                 win = False
                 break
         if win:
@@ -53,7 +54,7 @@ class tictactoe:
         
         win = True
         for i in range(board_len):
-            if self.board[i][board_len - 1 - i] != value:
+            if self.board[board_pos[i][board_len - 1 - i]] != value:
                 win = False
                 break
         if win:
@@ -66,10 +67,9 @@ class tictactoe:
         return True
 
     def board_full(self):
-        for row in self.board:
-            for val in row:
-                if val == '-':
-                    return False
+        for val in self.board:
+            if val == '-':
+                return False
         return True
 
     def play(self):
@@ -82,10 +82,10 @@ class tictactoe:
                 self.draw_board()
                 
                 #player input here
-                row, col = list(map(int, input("Input: ").split()))
+                pos = int(input("Input: "))
 
                 #fill value according to position
-                self.board[row][col] = self.player_value
+                self.board[pos] = self.player_value
 
                 #check win condition
                 if self.check_win("player"):
