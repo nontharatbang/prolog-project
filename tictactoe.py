@@ -82,6 +82,9 @@ class TicTacToe:
 
     def swap_turn(self, player):
         return "com" if player == "player" else "player"
+    
+    def is_filled(self, pos):
+        return True if self.board[pos] != '-' else False
 
     def play(self):
         self.create_board()
@@ -95,6 +98,9 @@ class TicTacToe:
                 
                 #player input here
                 pos = int(input("Input: "))
+                if self.is_filled(pos):
+                    print("The position is already filled. Choose a new one.")
+                    continue
 
                 #fill value according to position
                 self.board[pos] = self.player_value
@@ -103,7 +109,6 @@ class TicTacToe:
                 if self.check_win("player"):
                     print("Player's win!")
                     break
-                continue
 
             else:
                 print("Computer's Turn")
@@ -111,8 +116,11 @@ class TicTacToe:
                 self.draw_board()
                 #com function minimax
                 pos = int(input("Input: "))
+                if self.is_filled(pos):
+                    print("The position is already filled. Choose a new one.")
+                    continue
                 self.board[pos] = 'O'
-
+                
                 #check win condition
                 if self.check_win("com"):
                     print("Com's win!")
