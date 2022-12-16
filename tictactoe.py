@@ -125,15 +125,16 @@ class TicTacToe:
             self.player_input()
         else:            
             # bot's turn
-            self.draw_board()
             # bot use minimax algorithm to calculate the max value position to min the player
             new_val = sorted(self.prolog.query("minimax({}, Pos)".format(self.board)))[0]["Pos"]
             self.bot_move(new_val)
         
+        self.redraw()
+        self.draw_winner()
+        
         if self.board_full():
             pygame.display.set_caption('Draw! Press Space to Restart')
             label = self.font.render(f'Draw! Press Space to restart', True, 'white', 'black')
-            self.game.screen.blit(label, (900 // 2 - label.get_width() // 2, 900 // 4))
+            self.game.screen.blit(label, (WIDTH // 2 - label.get_width() // 2, WIDTH // 4))
             return
             
-        self.redraw()
