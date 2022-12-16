@@ -1,24 +1,29 @@
 from pyswip import Prolog
 
 class TicTacToe:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.board = []
-        self.player_turn = True
-        self.player_value = "o"
+        self.win = False
+        self.player = 'player'
+        self.player_value = 'o'
+        self.board_bg = pygame.image.load('./Resources/field.png')
+        self.x_image = pygame.image.load('./Resources/X.png')
+        self.o_image = pygame.image.load('./Resources/O.png')
+        self.font = pygame.font.SysFont('Verdana', 150 // 4, True)
         self.prolog = Prolog()
         self.prolog.consult('minimax.pl')
+        
+        self.create_board()
+        self.draw_board()
 
     def create_board(self):
         for i in range(9):
             self.board.append('n')
 
     def draw_board(self):
-        board_len = len(self.board)
-        for i in range(board_len):
-            if(i % 3 == 0):
-                print()
-            print(self.board[i], end=" ")
-        print()
+        self.game.screen.blit(self.field, (0, 0))
+        pygame.display.set_caption('Minimax TicTacToe')
 
     def fill_position(self, pos, value):
         self.board[pos - 1] = value
