@@ -7,7 +7,7 @@ class TicTacToe:
     def __init__(self, game):
         self.game = game
         self.board = []
-        self.win = False
+        self.game_end = False
         self.player = 'player'
         self.player_value = 'o'
         self.board_bg = pygame.image.load('./Resources/field.png')
@@ -40,7 +40,7 @@ class TicTacToe:
 
         left_click = pygame.mouse.get_pressed()[0]
 
-        if left_click and self.board[tile_pos] == 'n' and not self.win:
+        if left_click and self.board[tile_pos] == 'n' and not self.game_end:
             self.board[tile_pos] = self.player_value
             self.player = self.swap_turn(self.player)
 
