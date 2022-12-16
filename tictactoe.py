@@ -31,7 +31,7 @@ class TicTacToe:
     def redraw(self):
         for i in range(len(self.board)):
             if self.board[i] != 'n':
-                self.game.screen.blit(self.x if self.board[i] == 'x' else self.o, vec2(i % 3, i // 3) * 300)
+                self.game.screen.blit(self.x_image if self.board[i] == 'x' else self.o_image, vec2(i % 3, i // 3) * 300)
 
     def player_input(self):
         current_tile = vec2(pygame.mouse.get_pos()) // TILE_SIZE
