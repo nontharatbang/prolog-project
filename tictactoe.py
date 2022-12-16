@@ -1,4 +1,7 @@
 from pyswip import Prolog
+from Constant import *
+
+TILE_SIZE = WIDTH // 3
 
 class TicTacToe:
     def __init__(self, game):
@@ -25,8 +28,10 @@ class TicTacToe:
         self.game.screen.blit(self.field, (0, 0))
         pygame.display.set_caption('Minimax TicTacToe')
 
-    def fill_position(self, pos, value):
-        self.board[pos - 1] = value
+    def redraw(self):
+        for i in range(len(self.board)):
+            if self.board[i] != 'n':
+                self.game.screen.blit(self.x if self.board[i] == 'x' else self.o, vec2(i % 3, i // 3) * 300)
 
     def check_win(self, player):
         win = None
