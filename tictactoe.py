@@ -120,7 +120,7 @@ class TicTacToe:
         self.player = self.swap_turn(self.player)
 
     def play(self):
-        if(player == "player"):
+        if(self.player == "player"):
             # player's turn 
             self.player_input()
         else:            
