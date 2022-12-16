@@ -118,13 +118,11 @@ class TicTacToe:
 
     def swap_turn(self, player):
         return 'bot' if player == 'player' else 'player'
-    
-    def is_filled(self, pos):
-        return True if self.board[pos] != 'n' else False
 
     def bot_move(self, new_board):
         for i in range(len(new_board)):
             self.board[i] = str(new_board[i])
+        self.player = self.swap_turn(self.player)
 
     def play(self):
         self.create_board()
