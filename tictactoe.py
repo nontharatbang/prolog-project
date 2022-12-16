@@ -61,11 +61,11 @@ class TicTacToe:
         if self.board_full():
             return False
 
-        #check winning rows
+        # check winning rows
         for i in range(board_len):
             win = True
             for j in range(board_len):
-                #if the value is not the current player's value
+                # if the value is not the current player's value
                 if self.board[board_pos[i][j]] != value:
                     win = False
                     break
@@ -73,7 +73,7 @@ class TicTacToe:
                 self.game_end = True
                 return win
         
-        #check winning columns
+        # check winning columns
         for i in range(board_len):
             win = True
             for j in range(board_len):
@@ -84,7 +84,7 @@ class TicTacToe:
                 self.game_end = True
                 return win
         
-        #check winning diagonals
+        # check winning diagonals
         win = True
         for i in range(board_len):
             if self.board[board_pos[i][i]] != value:
@@ -104,11 +104,6 @@ class TicTacToe:
             return win
 
         return False
-        
-        # for val in self.board:
-        #     if val == 'n':
-        #         return False
-
 
     def board_full(self):
         for val in self.board:
@@ -125,52 +120,20 @@ class TicTacToe:
         self.player = self.swap_turn(self.player)
 
     def play(self):
-        self.create_board()
-
-        player = "player"
-        while True:
-            if(player == "player"):
-                print("Player's Turn")
-                
-                self.draw_board()
-                
-                #player input here
-                pos = int(input("Input: "))
-                if self.is_filled(pos):
-                    print("The position is already filled. Choose a new one.")
-                    continue
-
-                #fill value according to position
-                self.board[pos] = self.player_value
-
-                #check win condition
-                if self.check_win("player"):
-                    print("Player's win!")
-                    break
-
-            else:
-                print("Computer's Turn")
-                
-                self.draw_board()
-                #com function minimax
-                # pos = sorted(self.prolog.query("minimax({}, Pos".format(self.board)))
-                new_val = sorted(self.prolog.query("minimax({}, Pos)".format(self.board)))[0]["Pos"]
-                self.bot_move(new_val)
-                
-                #check win condition
-                if self.check_win("com"):
-                    print("Bot's win!")
-                    break
+        if(player == "player"):
+            # player's turn 
+            self.player_input()
+        else:            
+            # bot's turn
+            self.draw_board()
+            # bot use minimax algorithm to calculate the max value position to min the player
+            new_val = sorted(self.prolog.query("minimax({}, Pos)".format(self.board)))[0]["Pos"]
+            self.bot_move(new_val)
+        
+        if self.board_full():
+            pygame.display.set_caption('Draw! Press Space to Restart')
+            label = self.font.render(f'Draw! Press Space to restart', True, 'white', 'black')
+            self.game.screen.blit(label, (900 // 2 - label.get_width() // 2, 900 // 4))
+            return
             
-            if self.board_full():
-                print("Draw!")
-                break
-                
-            #swap turn
-            player = self.swap_turn(player)
-            
-        print()
-        self.draw_board()
-
-game = TicTacToe()
-game.play()
+        self.redraw()
