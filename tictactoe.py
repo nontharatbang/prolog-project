@@ -25,7 +25,7 @@ class TicTacToe:
             self.board.append('n')
 
     def draw_board(self):
-        self.game.screen.blit(self.field, (0, 0))
+        self.game.screen.blit(self.board_bg, (0, 0))
         pygame.display.set_caption('Minimax TicTacToe')
 
     def redraw(self):
