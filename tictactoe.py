@@ -44,6 +44,14 @@ class TicTacToe:
             self.board[tile_pos] = self.player_value
             self.player = self.swap_turn(self.player)
 
+    def draw_winner(self):
+        if self.check_win('player'):
+            label = self.font.render(f'Player wins! Press Spacbar to Restart', True, 'white', 'black')
+            self.game.screen.blit(label, (WIDTH // 2 - label.get_width() // 2, WIDTH // 4))
+        elif self.check_win('bot'):
+            label = self.font.render(f'Bot wins! Press Spacbar to Restart', True, 'white', 'black')
+            self.game.screen.blit(label, (WIDTH // 2 - label.get_width() // 2, WIDTH // 4))
+
     def check_win(self, player):
         win = None
         value = 'o' if player == "player" else 'x'
