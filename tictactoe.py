@@ -65,14 +65,13 @@ class TicTacToe:
         for i in range(board_len):
             win = True
             for j in range(board_len):
+                #if the value is not the current player's value
                 if self.board[board_pos[i][j]] != value:
-                    print("check ", self.board[board_pos[i][j]], "with ", value)
                     win = False
                     break
             if win:
-                print("win row")
+                self.game_end = True
                 return win
-
         
         #check winning columns
         for i in range(board_len):
@@ -82,7 +81,7 @@ class TicTacToe:
                     win = False
                     break
             if win:
-                print("win col")
+                self.game_end = True
                 return win
         
         #check winning diagonals
@@ -92,7 +91,7 @@ class TicTacToe:
                 win = False
                 break
         if win:
-            print("win diagonal left")
+            self.game_end = True
             return win
         
         win = True
@@ -101,15 +100,15 @@ class TicTacToe:
                 win = False
                 break
         if win:
-            print("win diagonal right")
+            self.game_end = True
             return win
 
-        for val in self.board:
-            if val == 'n':
-                return False
+        return False
+        
+        # for val in self.board:
+        #     if val == 'n':
+        #         return False
 
-        print("win default")
-        return True
 
     def board_full(self):
         for val in self.board:
@@ -118,7 +117,7 @@ class TicTacToe:
         return True
 
     def swap_turn(self, player):
-        return "com" if player == "player" else "player"
+        return 'bot' if player == 'player' else 'player'
     
     def is_filled(self, pos):
         return True if self.board[pos] != 'n' else False
