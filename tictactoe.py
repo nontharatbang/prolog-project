@@ -33,6 +33,17 @@ class TicTacToe:
             if self.board[i] != 'n':
                 self.game.screen.blit(self.x if self.board[i] == 'x' else self.o, vec2(i % 3, i // 3) * 300)
 
+    def player_input(self):
+        current_tile = vec2(pygame.mouse.get_pos()) // TILE_SIZE
+        tile_pos = int(current_tile[0] + (current_tile[1] * 3))
+        print("tile position: ", tile_pos)
+
+        left_click = pygame.mouse.get_pressed()[0]
+
+        if left_click and self.board[tile_pos] == 'n' and not self.win:
+            self.board[tile_pos] = self.player_value
+            self.player = self.swap_turn(self.player)
+
     def check_win(self, player):
         win = None
         value = 'o' if player == "player" else 'x'
