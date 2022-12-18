@@ -1,89 +1,78 @@
 :- module(minimax, [minimax/2]).
 
 % All win positions for tic-tac-toe
-win_pos(P, [P, P, P, _, _, _, _, _, _]).
-win_pos(P, [_, _, _, P, P, P, _, _, _]).
-win_pos(P, [_, _, _, _, _, _, P, P, P]).
-win_pos(P, [P, _, _, P, _, _, P, _, _]).
-win_pos(P, [_, P, _, _, P, _, _, P, _]).
-win_pos(P, [_, _, P, _, _, P, _, _, P]).
-win_pos(P, [P, _, _, _, P, _, _, _, P]).
-win_pos(P, [_, _, P, _, P, _, P, _, _]).
+win(P, [P, P, P, _, _, _, _, _, _]).
+win(P, [_, _, _, P, P, P, _, _, _]).
+win(P, [_, _, _, _, _, _, P, P, P]).
+win(P, [P, _, _, P, _, _, P, _, _]).
+win(P, [_, P, _, _, P, _, _, P, _]).
+win(P, [_, _, P, _, _, P, _, _, P]).
+win(P, [P, _, _, _, P, _, _, _, P]).
+win(P, [_, _, P, _, P, _, P, _, _]).
 
-% full_board(+Board)
-% Is true if there is no n (empty value) in the board.
-full_board(Board) :-
+% swap min max
+swap(max, min).
+swap(min, max).
+
+% player -> we trying to max value for bot(o)
+player(max, o).
+player(min, x).
+
+% full board if there is no n in the board
+board_full(Board) :-
     \+ member(n, Board).
 
-% possible_move(+PlayerColor, +Board, -PossibleMove)
-% The first n will be replaced with PlayerColor -> possible move.
-possible_move(P, [n | Rest], [P | Rest]).
-possible_move(P, [X | Rest], [X | Rest2]) :-
-    possible_move(P, Rest, Rest2).
+% find possible move
+moves(P, [n | Rest], [P | Rest]).
+moves(P, [X | Rest], [X | Rest2]) :-
+    moves(P, Rest, Rest2).
 
-% all_possible_moves(+PlayerColor, +Board, -AllMoves)
-% AllMoves will be matched with all possible moves for the current
-% Board.
-all_possible_moves(P, Board, AllMoves) :-
-    findall(Move, possible_move(P, Board, Move), AllMoves).
+% find all possible move
+all_moves(P, Board, AllMoves) :-
+    findall(Move, moves(P, Board, Move), AllMoves).
 
-% eval_board(+Board, -Value)
-% Evaluates the score of the Board.
+% evaluate boards
 eval_board([], Value) :-
     Value is 0.
 eval_board(Board, Value) :-
-    win_pos(x, Board),
-    Value is 1, !.
+    win(o, Board),
+    Value is 10, !.
 eval_board(Board, Value) :-
-    win_pos(o, Board),
-    Value is -1, !.
+    win(x, Board),
+    Value is -10, !.
 eval_board(Board, Value) :-
-    full_board(Board),
+    board_full(Board),
     Value is 0.
 
-% change_max_min(+MinOrMax, TheOther)
-% Changes the MinMax atom.
-change_max_min(max, min).
-change_max_min(min, max).
-
-% compare_moves(+MinMax, +MoveA, +ValueA, +MoveB, +ValueB, -BetterMove, -BetterValue)
-% Chooses the move with the higher value.
-compare_moves(max, MoveA, ValueA, _, ValueB, MoveA, ValueA) :-
+% compare each value and return better move and its value
+better_moves(max, MoveA, ValueA, _, ValueB, MoveA, ValueA) :-
 	ValueA >= ValueB.
-compare_moves(max, _, ValueA, MoveB, ValueB, MoveB, ValueB) :-
+better_moves(max, _, ValueA, MoveB, ValueB, MoveB, ValueB) :-
 	ValueA < ValueB.
-compare_moves(min, MoveA, ValueA, _, ValueB, MoveA, ValueA) :-
+better_moves(min, MoveA, ValueA, _, ValueB, MoveA, ValueA) :-
 	ValueA =< ValueB.
-compare_moves(min, _, ValueA, MoveB, ValueB, MoveB, ValueB) :-
+better_moves(min, _, ValueA, MoveB, ValueB, MoveB, ValueB) :-
 	ValueA > ValueB.
 
-% best_move(+MinMax, +AllMoves, -BestMove, -BestValue)
-% Chooses the next move.
-best_move(max, [], [], -2).
-best_move(min, [], [], 2).
-best_move(MinMax, [Move | RestMoves], BestMove, BestValue) :-
+% find the best move
+best_move(max, [], [], -1).
+best_move(min, [], [], 1).
+best_move(MinMax, [Move | Rest], BestMove, BestValue) :-
     eval_board(Move, Value),
-    best_move(MinMax, RestMoves, CurrentBestM, CurrentBestV),
-	compare_moves(MinMax, Move, Value, CurrentBestM, CurrentBestV, BestMove, BestValue).
-best_move(MinMax, [Move | RestMoves], BestMove, BestValue) :-
-	best_move(MinMax, RestMoves, CurrentBestM, CurrentBestV),
-	change_max_min(MinMax, Other),
-	minimax_step(Other, Move, _, BottomBestV),
-	compare_moves(MinMax, Move, BottomBestV, CurrentBestM, CurrentBestV, BestMove, BestValue).
+    best_move(MinMax, Rest, BestMove1, BestValue1),
+	better_moves(MinMax, Move, Value, BestMove1, BestValue1, BestMove, BestValue).
+best_move(MinMax, [Move | Rest], BestMove, BestValue) :-
+	best_move(MinMax, Rest, BestMove1, BestValue1),
+	swap(MinMax, Other),
+	find_solution(Other, Move, _, BestValue2),
+	better_moves(MinMax, Move, BestValue2, BestMove1, BestValue1, BestMove, BestValue).
 
-% player_color(MinMax, Color)
-% Matches the player color based on the MinMax atom.
-player_color(max, x).
-player_color(min, o).
-
-% minimax_step(+MinMax, +Board, -BestMove, -BestValue)
-% Chooses the best possible move for the current board.
-minimax_step(MinMax, Board, BestMove, BestValue) :-
-	player_color(MinMax, Color),
-	all_possible_moves(Color, Board, AllMoves),
+% find best possible move according to available board
+find_solution(MinMax, Board, BestMove, BestValue) :-
+	player(MinMax, Color),
+	all_moves(Color, Board, AllMoves),
     best_move(MinMax, AllMoves, BestMove, BestValue).
 
-% minimax(+Board, -BestMove)
-% Matches the next move based on the current board.
+% return best move according to input board
 minimax(Board, BestMove) :-
-	minimax_step(max, Board, BestMove, _), !.
+	find_solution(max, Board, BestMove, _), !.

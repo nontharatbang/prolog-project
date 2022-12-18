@@ -9,7 +9,7 @@ class TicTacToe:
         self.board = []
         self.game_end = False
         self.player = 'player'
-        self.player_value = 'o'
+        self.player_value = 'x'
         self.board_bg = pygame.image.load('./Resources/field.png')
         self.x_image = pygame.image.load('./Resources/X.png')
         self.o_image = pygame.image.load('./Resources/O.png')
@@ -36,8 +36,6 @@ class TicTacToe:
     def player_input(self):
         current_tile = vec2(pygame.mouse.get_pos()) // TILE_SIZE
         tile_pos = int(current_tile[0] + (current_tile[1] * 3))
-        print("tile position: ", tile_pos)
-
         left_click = pygame.mouse.get_pressed()[0]
 
         if left_click and self.board[tile_pos] == 'n' and not self.game_end:
